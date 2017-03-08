@@ -3,8 +3,7 @@ CFLAGS = -Wall -ansi -g
 LISTS_FILES = var.c func.c class.c list.c
 
 
-all: A1 makePost A2
-
+all: A1 makePost A2 A3
 
 
 A1: a1.o list.o 
@@ -38,8 +37,16 @@ libstream.a: stream.c stream.h
 	$(CC) $(CFLAGS)	stream.c -o stream.o -c ;\
 	ar cr libstream.a stream.o
 
+
+A3: a3.o
+	$(CC) $(CFLAGS) a3.o -o a3
+
+a3.o: a3.c
+	$(CC) $(CFLAGS) -c a3.c
+
+
 run:
-	valgrind --leak-check=full --show-reachable=yes ./a2 
+	valgrind --leak-check=full --show-reachable=yes ./a3 
 
 clean: 
-	rm -f *.o a2 a1 assets.txt addauthor post libstream.a messages/*
+	rm -f *.o a2 a1 assets.txt addauthor post libstream.a messages/* a3

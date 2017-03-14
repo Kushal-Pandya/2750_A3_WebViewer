@@ -13,88 +13,84 @@
 #include <unistd.h>
 
 
-int isWhiteSpace(char ch) {
-	switch(ch) {
-		case ' ':
-		case '\t':
-		case '\n':
-		case '\r':
-			return 0;
-		default:
-			return 1;
+int getInfo(FILE *infile, char tag);
+char *getAttribute(FILE *infile, char *tag);
+
+
+
+void parseFile() {
+	
+	char buffer[500];
+	char tag;
+	unsigned long position = 0;
+
+	FILE *infile = fopen("format.txt", "r");
+
+	while (fgets(buffer, 500, infile) != NULL) {
+
+		if (strcmp(buffer, "\n") != 0) {
+			tag = buffer[0];
+
+			switch(tag) {
+				case 'd':
+					printf("\t<hr>\n");
+
+
+			}
+		}
 	}
+
+	fclose(infile);
 }
 
 
-void parseFile(FILE *infile) {
+void formatFile(FILE *infile) {
 	char c;
-
-	char tag;
-	char *attribute = calloc(50, sizeof(char));
-	char *value = calloc(100, sizeof(char));
-
-	char *temp = calloc(2, sizeof(char));
-
-	int nextTag = 0;
-	int nextAttribute = 0;
-	int nextValue = 0;
-
 	int inBrackets = 0;
+	int inString = 0;
+	FILE *tempfile = fopen("format.txt", "w");
 
 	while ((c = fgetc(infile)) != EOF) {
 
 		switch(c) {
 			case '.':
-				if (inBrackets == 0)
-					nextTag = 1;
+				if (inBrackets == 0 && inString == 0)
+					fprintf(tempfile, "\n");
 				break;
 			case '(': 
-				nextTag = 0;
-				inBrackets = 1;
+				if (inString == 0)
+					inBrackets = 1;
+				fprintf(tempfile, "%c", c);
+				break;
+			case '"':
+				if (inString == 1 && inBrackets == 1)
+					inString = 0;
+				else if (inBrackets == 1)
+					inString = 1;
+
+				if (inBrackets == 0)
+					fprintf(tempfile, "%c", c);
 				break;
 			case ')':
-				nextTag = 0;
-				inBrackets = 0;
+				if (inString == 0)
+					inBrackets = 0;
+				fprintf(tempfile, "%c", c);
 				break;
 			default:
-				if (inBrackets == 0 && c != '.' && isWhiteSpace(c)) {
-					tag = c;
-					printf("%c\n", tag);
-					nextTag = 0;
-					nextAttribute = 1;
-				}
+				fprintf(tempfile, "%c", c);
 				break;
 		}
-
-		/*if (c == '.' && inBrackets == 0)
-			nextTag = 1;
-		else if (c == '(') {
-			nextTag = 0;
-			inBrackets = 1;
-		}
-
-		/*Getting HTML Tag here
-		if (inBrackets == 0 && c != '.' && isWhiteSpace(c)) {
-			tag = c;
-			printf("%c\n", tag);
-			nextTag = 0;
-			nextAttribute = 1;
-		}
-
-		if (c == ')') {
-			nextTag = 0;
-			inBrackets = 0;
-		}*/
 	}
+	fclose(tempfile);
 }
-
 
 int main(int argc, char *argv[]) {
 
-	FILE *fp = fopen("config", "r");
+	FILE *fp = fopen("config.wpml", "r");
 	printf("<!DOCTYPE html>\n<html>\n");
 	
-	parseFile(fp);
+	formatFile(fp);
+	parseFile();
 
 	printf("</html>\n");
 	fclose(fp);

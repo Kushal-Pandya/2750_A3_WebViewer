@@ -49,4 +49,4 @@ run:
 	valgrind --leak-check=full --show-reachable=yes ./a3 
 
 clean: 
-	rm -f *.o a2 a1 assets.txt addauthor post libstream.a messages/* a3
+	rm -f *.o a2 a1 assets.txt addauthor post libstream.a messages/* a3 format.txt

@@ -172,6 +172,128 @@ void lConvert(char **args) {
 	free(url);
 }
 
+void bConvert(char **args) {
+
+	int i;
+	char *attribute;
+	char *value;
+	char *text = calloc(100, sizeof(char));
+	char *link = calloc(500, sizeof(char));
+
+	for (i=0; i<10; i++) {
+		attribute = strtok(args[i], "=");
+		value = strtok(NULL, "=");
+
+		if (value != NULL) {
+			value[strcspn(value, "\r\n")] = 0;
+
+			if (strcmp(attribute, "name") == 0)
+				strcpy(text, value);
+
+			else if (strcmp(attribute, "link") == 0) {
+				strcpy(link, value);
+			}	
+		}
+	}
+	printf("<form action=\"%s\">\n", link);
+	printf("\t<input type=\"submit\" value=\"%s\"/>\n", text);
+	printf("</form>\n");
+	
+	free(text);
+	free(link);
+}
+
+void iConvert(char **args) {
+
+	int i;
+	char *attribute;
+	char *value;
+
+	char *temp = calloc(100, sizeof(char));
+	char *text = calloc(100, sizeof(char));
+	char *name = calloc(100, sizeof(char));
+	char *inputValue = calloc(100, sizeof(char));
+	
+	for (i=0; i<10; i++) {
+		strcpy(temp, args[i]);
+		attribute = strtok(temp, "=");
+		value = strtok(NULL, "=");
+
+		if (value != NULL) {
+			value[strcspn(value, "\r\n")] = 0;
+
+			if (strcmp(attribute, "action") == 0) 
+				printf("<form action=\"%s\">\n", value);
+		}
+	}
+
+	for (i=0; i<10; i++) {
+		strcpy(temp, args[i]);
+		attribute = strtok(temp, "=");
+		value = strtok(NULL, "=");
+
+		if (value != NULL) {
+			value[strcspn(value, "\r\n")] = 0;
+
+			if (strcmp(attribute, "value") == 0) 
+				strcpy(inputValue, value);
+			else if (strcmp(attribute, "text") == 0) 
+				strcpy(text, value);
+			else if (strcmp(attribute, "name") == 0) 
+				strcpy(name, value);
+		}
+	}
+	printf("\t%s<input type=\"text\" name=\"%s\" value=\"%s\"/>\n", text, name, inputValue);	
+	printf("</form>\n");
+	
+	free(text);
+	free(name);
+	free(inputValue);
+	free(temp);
+}
+
+void rConvert(char **args) {
+
+	int i;
+	char *attribute;
+	char *value;
+	char *temp = calloc(100, sizeof(char));
+	char *name = calloc(100, sizeof(char));
+
+	for (i=0; i<10; i++) {
+		strcpy(temp, args[i]);
+		attribute = strtok(temp, "=");
+		value = strtok(NULL, "=");
+
+		if (value != NULL) {
+			value[strcspn(value, "\r\n")] = 0;
+
+			if (strcmp(attribute, "action") == 0) 
+				printf("<form action=\"%s\">\n", value);
+
+			else if (strcmp(attribute, "name") == 0)
+				strcpy(name, value);
+		}
+	}
+
+	for (i=0; i<10; i++) {
+		strcpy(temp, args[i]);
+		attribute = strtok(temp, "=");
+		value = strtok(NULL, "=");
+
+		if (value != NULL) {
+			value[strcspn(value, "\r\n")] = 0;
+
+			if (strcmp(attribute, "value") == 0) 
+				printf("\t<input type=\"radio\" name=\"%s\" value=\"%s\"/> %s\n", name, value, value);	
+		}
+	}
+	printf("</form>\n");
+	
+	free(temp);
+	free(name);
+}
+
 void parseFile() {
 	
 	int i;
@@ -205,10 +327,20 @@ void parseFile() {
 				case 'p':
 					pConvert(args);
 					break;
+				case 'b':
+					bConvert(args);
+					break;
+				case 'r':
+					rConvert(args);
+					break;
+				case 'i':
+					iConvert(args);
+					break;
+				case 'e':
+				/*Executable not implemented yet*/
+					break;
 				default:
 					break;
-
-
 			}
 		}
 	}

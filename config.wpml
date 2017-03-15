@@ -1,4 +1,4 @@
 .h(text="Description")
-.h(size=5,text="Title")
+.h(size=5,text="Title").t(file="./config.wpml")
 .h(text="Description2").t(text="This is the text...").d()
 

@@ -1,4 +1,4 @@
-.h(text="Description")
-.h(size=5,text="Title").t(file="./config.wpml")
+.h(text="Description").p(image="image.jpg")
+.h(size=1,text="Title").l(text="click me",link="https://www.google.ca")
 .h(text="Description2").t(text="This is the text...").d()
 

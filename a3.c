@@ -83,6 +83,95 @@ void tConvert(char **args) {
 	}
 }
 
+void hConvert(char **args) {
+
+	int i;
+	char *attribute;
+	char *value;
+	int size = 3;
+	char *text = calloc(100, sizeof(char));
+
+	for (i=0; i<10; i++) {
+		attribute = strtok(args[i], "=");
+		value = strtok(NULL, "=");
+
+		if (value != NULL) {
+			value[strcspn(value, "\r\n")] = 0;
+
+			if (strcmp(attribute, "text") == 0)
+				strcpy(text, value);
+
+			else if (strcmp(attribute, "size") == 0) {
+				size = atoi(value);
+			}	
+		}
+	}
+	printf("<h%d>%s</h%d>\n", size, text, size);
+	free(text);
+}
+
+void pConvert(char **args) {
+
+	int i;
+	int height = 100;
+	int width = 100;
+
+	char *token;
+	char *attribute;
+	char *value;
+	char *imageName = calloc(100, sizeof(char));
+
+	for (i=0; i<10; i++) {
+		attribute = strtok(args[i], "=");
+		value = strtok(NULL, "=");
+
+		if (value != NULL) {
+			value[strcspn(value, "\r\n")] = 0;
+
+			if (strcmp(attribute, "image") == 0)
+				strcpy(imageName, value);
+
+			else if (strcmp(attribute, "size") == 0) {
+				token = strtok(value, "x");
+				width = atoi(token);
+				token = strtok(NULL, "x");
+				height = atoi(token);
+			}	
+		}
+	}
+	printf("<img src=\"%s\" style=\"width:%dpx;height:%dpx;\">\n", imageName, width, height);
+	free(imageName);
+}
+
+void lConvert(char **args) {
+
+	int i;
+	char *attribute;
+	char *value;
+	char *text = calloc(100, sizeof(char));
+	char *url = calloc(500, sizeof(char));
+
+	for (i=0; i<10; i++) {
+		attribute = strtok(args[i], "=");
+		value = strtok(NULL, "=");
+
+		if (value != NULL) {
+			value[strcspn(value, "\r\n")] = 0;
+
+			if (strcmp(attribute, "text") == 0)
+				strcpy(text, value);
+
+			else if (strcmp(attribute, "link") == 0) {
+				strcpy(url, value);
+			}	
+		}
+	}
+	printf("<a href=\"%s\">%s</a>\n", url, text);
+	
+	free(text);
+	free(url);
+}
+
 void parseFile() {
 	
 	int i;
@@ -94,6 +183,7 @@ void parseFile() {
 
 	while (fgets(buffer, 500, infile) != NULL) {
 
+		/*If buffer[1] is not ( then we know its a unspecified tag*/
 		if (strcmp(buffer, "\n") != 0 && buffer[1] == '(') {
 			tag = buffer[0];
 
@@ -101,11 +191,20 @@ void parseFile() {
 
 			switch(tag) {
 				case 'd':
-					printf("\t<hr>\n");
+					printf("<hr>\n");
 					break;
 				case 't':
 					tConvert(args);
-
+					break;
+				case 'h':
+					hConvert(args);
+					break;
+				case 'l':
+					lConvert(args);
+					break;
+				case 'p':
+					pConvert(args);
+					break;
 				default:
 					break;
 

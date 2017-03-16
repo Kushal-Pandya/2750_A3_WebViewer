@@ -195,7 +195,7 @@ void bConvert(char **args) {
 			}	
 		}
 	}
-	printf("<form action=\"%s\">\n", link);
+	printf("<form method=\"POST\" action=\"%s\">\n", link);
 	printf("\t<input type=\"submit\" value=\"%s\"/>\n", text);
 	printf("</form>\n");
 	
@@ -223,7 +223,7 @@ void iConvert(char **args) {
 			value[strcspn(value, "\r\n")] = 0;
 
 			if (strcmp(attribute, "action") == 0) 
-				printf("<form action=\"%s\">\n", value);
+				printf("<form method=\"POST\" action=\"%s\" id=\"usrform\">\n", value);
 		}
 	}
 
@@ -241,9 +241,16 @@ void iConvert(char **args) {
 				strcpy(text, value);
 			else if (strcmp(attribute, "name") == 0) 
 				strcpy(name, value);
+
+			if (strcmp(name, "") != 0 && strcmp(text, "") != 0 && strcmp(inputValue, "") != 0) {
+				printf("\t%s<input type=\"text\" name=\"%s\" value=\"%s\"/>\n", text, name, inputValue);	
+				strcpy(name, "");
+				strcpy(text, "");
+				strcpy(inputValue, "");
+			}
 		}
 	}
-	printf("\t%s<input type=\"text\" name=\"%s\" value=\"%s\"/>\n", text, name, inputValue);	
+	printf("\t<input type=\"submit\" value=\"Submit\"/>\n");
 	printf("</form>\n");
 	
 	free(text);
@@ -269,7 +276,7 @@ void rConvert(char **args) {
 			value[strcspn(value, "\r\n")] = 0;
 
 			if (strcmp(attribute, "action") == 0) 
-				printf("<form action=\"%s\">\n", value);
+				printf("<form method=\"POST\" action=\"%s\">\n", value);
 
 			else if (strcmp(attribute, "name") == 0)
 				strcpy(name, value);
@@ -292,6 +299,36 @@ void rConvert(char **args) {
 	
 	free(temp);
 	free(name);
+}
+
+void eConvert(char **args) {
+
+	int i;
+	char *attribute;
+	char *value;
+	char *file = calloc(100, sizeof(char));
+
+	for (i=0; i<10; i++) {
+		attribute = strtok(args[i], "=");
+		value = strtok(NULL, "=");
+
+		if (value != NULL) {
+			value[strcspn(value, "\r\n")] = 0;
+
+			if (strcmp(attribute, "exe") == 0)
+				strcpy(file, value);
+		}
+	}
+	printf("<?php\n");
+	printf("exec(\"%s\", $output, $status);\n", file);
+	printf("if ($status)\n");
+	printf("\techo 'exec failed';\n");
+	printf("else {\n");
+	printf("\tforeach ($output as $line)\n");
+	printf("\t\techo $line;\n");
+	printf("}\n?>\n");
+	
+	free(file);
 }
 
 void parseFile() {
@@ -337,12 +374,14 @@ void parseFile() {
 					iConvert(args);
 					break;
 				case 'e':
-				/*Executable not implemented yet*/
+					eConvert(args);
 					break;
 				default:
 					break;
 			}
 		}
+		else
+			printf("%s\n", buffer);
 	}
 
 	for (i=0; i<10; i++)
@@ -397,9 +436,16 @@ void formatFile(FILE *infile) {
 
 int main(int argc, char *argv[]) {
 
-	FILE *fp = fopen("config.wpml", "r");
+	if (argc != 2)
+		exit(1);
+
+	FILE *fp = fopen(argv[1], "r");
+	if (fp == NULL) {
+		printf("FILE NOT FOUND: %s\n", argv[1]);
+		exit(1);
+	}
+
 	printf("<!DOCTYPE html>\n<html>\n");
-	
 	formatFile(fp);
 	parseFile();
 

@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 	int removal = 0;
 
 
-	if (argc < 2) {
+	if (argc < 3) {
 		printf("Not correct arguments\n");
 		exit(0);
 	}
@@ -32,8 +32,10 @@ int main(int argc, char *argv[]) {
 		strcpy(name, argv[2]);
 		if (argc > 3) {
 			for (i=3; i<argc; i++) {
-				strcat(name, " ");
-				strcat(name, argv[i]);
+				if (argv[i][0] != '*') {
+					strcat(name, " ");
+					strcat(name, argv[i]);
+				}
 			}
 		}
 	}
@@ -41,14 +43,21 @@ int main(int argc, char *argv[]) {
 		strcpy(name, argv[1]);
 		if (argc > 2) {
 			for (i=2; i<argc; i++) {
-				strcat(name, " ");
-				strcat(name, argv[i]);
+				if (argv[i][0] != '*') {
+					strcat(name, " ");
+					strcat(name, argv[i]);
+				}
 			}
 		}
 	}
 
-	printf("List streams: ");
-	fgets(inputBuffer, 100, stdin);
+
+	for (i=1; i<argc; i++) {
+		if (argv[i][0] == '*') {
+			strcpy(inputBuffer, argv[i]);
+			removeCharFromString(inputBuffer, '*');
+		}
+	}
 
 	if (removal == 1) 
 		removeUser(name, inputBuffer);

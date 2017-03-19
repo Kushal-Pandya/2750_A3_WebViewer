@@ -1,10 +1,9 @@
 <html>
 <body>
 
-
 <?php 
 
-$cmd = './a3 index.wpml';
+$cmd = './a3 removeAuthor.wpml';
 exec($cmd, $output, $status);
 
 if ($status)
@@ -16,6 +15,7 @@ else {
 }
 
 ?>
+
 
 </body>
 </html> 

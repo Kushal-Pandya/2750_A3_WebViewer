@@ -3,7 +3,7 @@
 
 <?php 
 
-$cmd = './a3 post.wpml';
+$cmd = './a3 addauthor.wpml';
 exec($cmd, $output, $status);
 
 if ($status)
@@ -16,15 +16,6 @@ else {
 
 ?>
 
-Authors:
-<?php 
-	echo $_POST["author"]; 
-?>
-<br>
-Streams: 
-<?php 
-	echo $_POST["streams"]; 
-?>
 
 </body>
 </html> 

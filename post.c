@@ -63,18 +63,33 @@ int main(int argc, char *argv[]) {
 	struct PostEntry p;
 	constructorPostEntry(&p);
 	int i;
-	if (argc < 2) {
+	if (argc < 4) {
 		printf("Not correct arguments\n");
 		exit(0);
 	}
 	strcpy(name, argv[1]);
-	if (argc > 2) {
-		for (i=2; i<argc; i++) {
-			strcat(name, " ");
-			strcat(name, argv[i]);
+	if (argc > 4) {
+		for (i=2; i<argc; i++) {			
+			if (argv[i][0] != '*') {
+				if (argv[i][0] != '@') {
+					strcat(name, " ");
+					strcat(name, argv[i]);
+				}
+			}
 		}
 	}
-	p.PreadInput(name, stream, text);
+	
+	for (i=1; i<argc; i++) {
+		if (argv[i][0] == '*') {
+			strcpy(stream, argv[i]);
+			removeCharFromString(stream, '*');
+		}
+		else if (argv[i][0] == '@') {
+			strcpy(text, argv[i]);
+			removeCharFromString(text, '@');
+		}
+	}
+	
 	newPost->username = malloc(strlen(name)+1);
 	newPost->streamname = malloc(strlen(stream)+1);
 	newPost->date = malloc(81);

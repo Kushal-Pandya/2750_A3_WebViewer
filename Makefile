@@ -3,7 +3,7 @@ CFLAGS = -Wall -ansi -g
 LISTS_FILES = var.c func.c class.c list.c
 
 
-all: A1 makePost A2 A3
+all: A1 A2 A3 applyPerm
 
 
 A1: a1.o list.o 
@@ -16,7 +16,7 @@ list.o: list.c a1.h
 	$(CC) $(CFLAGS) -c list.c 
 
 makePost:
-	./a1 post.cc
+	mkdir messages
 
 
 A2: addauthor post
@@ -38,11 +38,14 @@ libstream.a: stream.c stream.h
 	ar cr libstream.a stream.o
 
 
-A3: a3.o
+A3: a3.o 
 	$(CC) $(CFLAGS) a3.o -o a3
 
 a3.o: a3.c
 	$(CC) $(CFLAGS) -c a3.c
+
+applyPerm:
+	chmod 777 a3
 
 
 run:

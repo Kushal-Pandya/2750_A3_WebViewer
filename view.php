@@ -1,10 +1,9 @@
 <html>
 <body>
 
-
 <?php 
 
-$cmd = './a3 index.wpml';
+$cmd = './a3 view.wpml';
 exec($cmd, $output, $status);
 
 if ($status)

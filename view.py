@@ -17,13 +17,20 @@ def getName():
 		name = ""
 		for word in sys.argv:
 			if word != sys.argv[0]:
-				if name == "":
-					name = name + word
-				else:
-					name = name + " " + word
+				if word[0] != '*':
+					if name == "":
+						name = name + word
+					else:
+						name = name + " " + word
 		return name
 	else:
 		return sys.argv[1]
+
+def getStream():
+	for stream in sys.argv:
+		if stream[0] == '*':
+			stream = stream.replace("*", "")
+			return stream
 
 def clearScreen():
 	os.system('cls' if os.name == 'nt' else 'clear')
@@ -61,7 +68,7 @@ def getPostPositions(stream):
 	positions = []
 
 	if os.path.isfile(filename) == False:
-		print '%s does not exist.. exiting' % filename
+		print '%s does not exist.. ' % filename
 		sys.exit()
 
 	with open(filename) as f:
@@ -72,21 +79,21 @@ def getPostPositions(stream):
 
 
 def selectStream(name):
+	check = 0
+
 	# getting and printing list of streams
 	streamList = getListOfStreams(name)
 	if len(streamList) == 1:
 		print '%s does not exist in any streams.. exiting' % name
 		sys.exit()
 
-	for stream in streamList:
-		print stream,
+	for arg in sys.argv:
+		if arg[0] == '*':
+			check = 1
 
-	stream = raw_input()
-	if stream not in streamList:
-		print 'Invalid stream'
-		sys.exit()
-
-	return stream
+	if check == 0:
+		for stream in streamList:
+			print stream
 
 
 def streamSelected(stream, name):
@@ -123,7 +130,7 @@ def streamSelected(stream, name):
 		lineCount = lineCount + 1
 
 	if check == 1:
-		print 'All posts in current stream are read, press - for previous posts\n'
+		print 'All posts in current stream are read, press the Page Down for previous posts\n'
 
 	return postRead	
 
@@ -420,14 +427,18 @@ def updateUser(stream, name, newRead):
 			
 
 if __name__ == "__main__":
+
 	name = getName()
-	stream = selectStream(name)
+	selectStream(name)
+	stream = getStream()
+
+	if stream == None:
+		sys.exit()
 
 	clearScreen()
 	postRead = streamSelected(stream, name)
-	printFooter()
 
-	keyPressed(stream, name, postRead)
+	# keyPressed(stream, name, postRead)
 
 
 

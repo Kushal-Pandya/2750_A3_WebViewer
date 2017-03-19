@@ -14,8 +14,18 @@ else {
 	}
 }
 
+
+
 session_start();
-echo 'AUTHOR: ' . $_SESSION['author'];
+$author = $_SESSION['author'];
+
+echo 'Viewing Stream: ' . $_POST['stream'] . ' <br><br>';
+
+$cmd2 = './view.py ' . $author . ' *' . $_POST['stream'];
+$output2 = shell_exec($cmd2);
+
+echo "<pre>" . $output2 . "</pre>";
+
 
 ?>
 

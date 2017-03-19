@@ -311,6 +311,7 @@ void rConvert(char **args) {
 				printf("\t<input type=\"radio\" name=\"%s\" value=\"%s\"/> %s\n", name, value, value);	
 		}
 	}
+	printf("\t<input type=\"submit\" value=\"Submit\"/>\n");
 	printf("</form>\n");
 	
 	free(temp);

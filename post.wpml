@@ -1,4 +1,4 @@
 .h(text="Post").d()
-.i(action=" ",text="Author Name: ",name="author",value=" ",text="Stream: ",name="stream",value=" ")
+.i(action="postDone.php",text="Author Name: ",name="author",value=" ",text="Stream: ",name="stream",value=" ")
 Text:<br><textarea name="text" form="usrform"></textarea><br>
 .t(text="<br>").b(name="Main Menu",link="index.php")

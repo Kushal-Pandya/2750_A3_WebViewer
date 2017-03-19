@@ -18,17 +18,11 @@ char *getAttribute(FILE *infile, char *tag);
 int removeCharFromString(char * string, char c);
 
 
-char **getArgs(char *argString) {
+char **getArgs(char **args, char *argString) {
 
 	int i;
 	char *newStr;
 	char *token;
-
-	/*Creating args array*/
-	char **args = malloc(sizeof(char*)*10);
-	for (i=0; i<10; i++)
-		args[i] = calloc(100, sizeof(char));
-
 
 	strtok(argString, "(");
 	newStr = strtok(NULL, "(");
@@ -353,9 +347,13 @@ void parseFile() {
 	int i;
 	char buffer[500];
 	char tag;
-	char **args;
 
 	FILE *infile = fopen("format.txt", "r");
+
+		/*Creating args array*/
+	char **args = malloc(sizeof(char*)*10);
+	for (i=0; i<10; i++)
+		args[i] = calloc(100, sizeof(char));
 
 	while (fgets(buffer, 500, infile) != NULL) {
 
@@ -363,7 +361,7 @@ void parseFile() {
 		if (strcmp(buffer, "\n") != 0 && buffer[1] == '(') {
 			tag = buffer[0];
 
-			args = getArgs(buffer);
+			args = getArgs(args, buffer);
 
 			switch(tag) {
 				case 'd':
@@ -401,8 +399,9 @@ void parseFile() {
 			printf("%s\n", buffer);
 	}
 
-	for (i=0; i<10; i++)
+	for (i=0; i<10; i++) {
 		free(args[i]);
+	}
 	free(args);
 
 	fclose(infile);

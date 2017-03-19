@@ -14,6 +14,9 @@ else {
 	}
 }
 
+session_start();
+echo 'AUTHOR: ' . $_SESSION['author'];
+
 ?>
 
 </body>

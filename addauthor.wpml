@@ -1,3 +1,3 @@
 .h(text="Add Author").d()
-.i(action="addauthorDone.php",text="Author ID: ",name="author",value=" ",text="Stream List: ",name="streams",value=" ")
-.b(name="Main Menu",link="index.php").t(text="<br>")
+.i(action="addauthorDone.php",text="Author ID: ",name="author",value="",text="Stream List: ",name="streams",value="")
+.b(name="Main Menu",link="indexDone.php").t(text="<br>")

@@ -249,6 +249,22 @@ void iConvert(char **args) {
 				strcpy(inputValue, "");
 			}
 		}
+		else {
+
+			if (strcmp(temp, "value") == 0) 
+				strcpy(inputValue, "");
+			else if (strcmp(temp, "text") == 0) 
+				strcpy(text, "");
+			else if (strcmp(temp, "name") == 0) 
+				strcpy(name, "");
+
+			if (strcmp(name, "") != 0 && strcmp(text, "") != 0 && strcmp(inputValue, "") == 0) {
+				printf("\t%s<input type=\"text\" name=\"%s\" value=\"%s\"/>\n", text, name, inputValue);	
+				strcpy(name, "");
+				strcpy(text, "");
+				strcpy(inputValue, "");
+			}
+		}
 	}
 	printf("\t<input type=\"submit\" value=\"Submit\"/>\n");
 	printf("</form>\n");

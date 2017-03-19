@@ -5,9 +5,12 @@
 <?php 
 
 session_start();
-$_SESSION['author'] = NULL;
+if (is_null($_SESSION['author']))
+	$_SESSION['author'] = $_POST['author'];
 
-$cmd = './a3 index.wpml';
+echo 'Logged in as: ' . $_SESSION['author'];
+
+$cmd = './a3 indexDone.wpml';
 exec($cmd, $output, $status);
 
 if ($status)

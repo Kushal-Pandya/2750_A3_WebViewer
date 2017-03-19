@@ -1,5 +1,2 @@
-.t(text="Kushal Pandya 0888884 A3").h(text="Select an option").d().t(text="<br>")
-.b(name="Add Author",link="addauthor.php")
-.b(name="Remove Author",link="removeAuthor.php")
-.b(name="Post",link="post.php")
-.b(name="View",link="view.php")
+.t(text="Kushal Pandya 0888884 A3").h(text="Login").d().t(text="<br>")
+.i(action="indexDone.php",text="User: ",name="author",value="")

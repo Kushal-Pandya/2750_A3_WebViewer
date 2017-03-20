@@ -18,10 +18,11 @@ else {
 
 session_start();
 $author = $_SESSION['author'];
+$_SESSION['stream'] = $_POST['stream']; 
 
 echo 'Viewing Stream: ' . $_POST['stream'] . ' <br><br>';
 
-$cmd2 = './view.py ' . $author . ' *' . $_POST['stream'];
+$cmd2 = './view.py ' . $author . ' *' . $_POST['stream'] . ' @a';
 $output2 = shell_exec($cmd2);
 
 echo "<pre>" . $output2 . "</pre>";

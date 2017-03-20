@@ -190,7 +190,7 @@ void bConvert(char **args) {
 		}
 	}
 	printf("<form method=\"POST\" action=\"%s\">\n", link);
-	printf("\t<input type=\"submit\" value=\"%s\"/>\n", text);
+	printf("\t<input type=\"submit\" name=\"%s\" value=\"%s\"/>\n", text, text);
 	printf("</form>\n");
 	
 	free(text);
@@ -350,7 +350,7 @@ void parseFile() {
 
 	FILE *infile = fopen("format.txt", "r");
 
-		/*Creating args array*/
+	/*Creating args array*/
 	char **args = malloc(sizeof(char*)*10);
 	for (i=0; i<10; i++)
 		args[i] = calloc(100, sizeof(char));

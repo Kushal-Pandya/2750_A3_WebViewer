@@ -8,7 +8,8 @@ import tty
 import sys
 import termios
 
-
+global _postRead
+_postRead = 0
 
 def getName():
 	if len(sys.argv) < 2:
@@ -18,10 +19,11 @@ def getName():
 		for word in sys.argv:
 			if word != sys.argv[0]:
 				if word[0] != '*':
-					if name == "":
-						name = name + word
-					else:
-						name = name + " " + word
+					if word[0] != '@':
+						if name == "":
+							name = name + word
+						else:
+							name = name + " " + word
 		return name
 	else:
 		return sys.argv[1]
@@ -31,6 +33,12 @@ def getStream():
 		if stream[0] == '*':
 			stream = stream.replace("*", "")
 			return stream
+
+def getMode():
+	for mode in sys.argv:
+		if mode[0] == '@':
+			mode = mode.replace("@", "")
+			return mode
 
 def clearScreen():
 	os.system('cls' if os.name == 'nt' else 'clear')
@@ -130,8 +138,9 @@ def streamSelected(stream, name):
 		lineCount = lineCount + 1
 
 	if check == 1:
-		print 'All posts in current stream are read, press the Page Down for previous posts\n'
+		print 'All posts in current stream are read, press the Page Up for previous posts\n'
 
+	setPostRead(postRead)
 	return postRead	
 
 
@@ -322,94 +331,58 @@ def displayStreamByName(filePointer):
 	return toReturn
 
 
-
-def keyPressed(stream, name, postRead):
-	origSettings = termios.tcgetattr(sys.stdin)
+def keyPressed(stream, name, postRead, x):
 	orderToggle = 0
 	orderToggleFP = 0
 	toggleOffset = 0
 	offsetCheck = 0
+	
+	if x == '-':
+		clearScreen()
 
-	tty.setraw(sys.stdin)
-	x = 0
+		if orderToggle:
+			orderToggleFP = movePageUpToggle(toggleOffset, offsetCheck)
+			offsetCheck = 1
+		else:
+			postRead = movePageUp(stream, name, postRead)
 
-	while x != 'q': 
-		x = sys.stdin.read(1)[0]
-		
-		if x == '-':
-			clearScreen()
-			termios.tcsetattr(sys.stdin, termios.TCSADRAIN, origSettings)
+	elif x == 'a':
+		postRead = streamSelected(stream, name)
 
-			if orderToggle:
-				orderToggleFP = movePageUpToggle(toggleOffset, offsetCheck)
-				offsetCheck = 1
-			else:
-				postRead = movePageUp(stream, name, postRead)
-			printFooter()
-			tty.setraw(sys.stdin)
+	elif x == '+':
+		clearScreen()
 
-		elif x == '+':
-			clearScreen()
-			termios.tcsetattr(sys.stdin, termios.TCSADRAIN, origSettings)
+		if orderToggle:
+			orderToggleFP, toggleOffset = movePageDownToggle(orderToggleFP)
+		else:
+			postRead = movePageDown(stream, name, postRead)
 
-			if orderToggle:
-				orderToggleFP, toggleOffset = movePageDownToggle(orderToggleFP)
-			else:
-				postRead = movePageDown(stream, name, postRead)
-			printFooter()
-			tty.setraw(sys.stdin)
+	elif x == 'o':
+		if orderToggle == 0:
+			positions = [0]
+			positions.extend(getPostPositions(stream))
+			del positions[-1]
 
-		elif x == 'o':
-			clearScreen()
-			termios.tcsetattr(sys.stdin, termios.TCSADRAIN, origSettings)
-
-			if orderToggle == 0:
-				positions = [0]
-				positions.extend(getPostPositions(stream))
-				del positions[-1]
-
-				writeByNames(getSortedNames(stream, positions), getSortedNamesDict(stream, positions))
-				orderToggleFP = 0
-				toggleOffset = 0
-				orderToggleFP = displayStreamByName(orderToggleFP)
-				orderToggle = 1
-			else:
-				postRead = streamSelected(stream, name)
-				orderToggle = 0
-
-			printFooter()
-			tty.setraw(sys.stdin)
-
-		elif x == 'm':
-			updateUser(stream, name, getPostPositions(stream)[-1])
-		
-		elif x == 'c':
-			clearScreen()
-			termios.tcsetattr(sys.stdin, termios.TCSADRAIN, origSettings)
-			newPositions = getPostPositions(stream)
-
-			if len(newPositions) > 1:
-				postRead = movePageDown(stream, name, newPositions[-2])
-			else:
-				postRead = movePageDown(stream, name, newPositions[-1])
-			printFooter()
-			tty.setraw(sys.stdin)
-
-		elif x == 's':
-			clearScreen()
-			termios.tcsetattr(sys.stdin, termios.TCSADRAIN, origSettings)
-			print 'Select New Stream:'
-			stream = selectStream(name)
-			clearScreen()
+			writeByNames(getSortedNames(stream, positions), getSortedNamesDict(stream, positions))
+			orderToggleFP = 0
+			toggleOffset = 0
+			orderToggleFP = displayStreamByName(orderToggleFP)
+			orderToggle = 1
+		else:
 			postRead = streamSelected(stream, name)
-			printFooter()
-			tty.setraw(sys.stdin)
+			orderToggle = 0
 
-		elif x == 'q':
-			termios.tcsetattr(sys.stdin, termios.TCSADRAIN, origSettings) 
-			sys.exit()
+	elif x == 'm':
+		updateUser(stream, name, getPostPositions(stream)[-1])
+	
+	elif x == 'c':
+		clearScreen()
+		newPositions = getPostPositions(stream)
 
-	termios.tcsetattr(sys.stdin, termios.TCSADRAIN, origSettings)  
+		if len(newPositions) > 1:
+			postRead = movePageDown(stream, name, newPositions[-2])
+		else:
+			postRead = movePageDown(stream, name, newPositions[-1])
 
 
 def updateUser(stream, name, newRead):
@@ -425,20 +398,28 @@ def updateUser(stream, name, newRead):
 			else:
 				f.write(line)
 			
+def setPostRead(postRead):
+	global _postRead
+	_postRead = postRead
+
+def getPostRead():
+	global _postRead
+	return _postRead
+
+
 
 if __name__ == "__main__":
 
 	name = getName()
 	selectStream(name)
 	stream = getStream()
+	mode = getMode()
 
 	if stream == None:
 		sys.exit()
 
 	clearScreen()
-	postRead = streamSelected(stream, name)
-
-	# keyPressed(stream, name, postRead)
+	keyPressed(stream, name, 0, mode)
 
 
 

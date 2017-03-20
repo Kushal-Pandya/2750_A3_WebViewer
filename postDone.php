@@ -15,10 +15,15 @@ if ($status) {
 	echo 'post failed';
 }
 else {
-	echo '<h5>Added Post<h5> from: '. $_SESSION['author'];
-	echo ' to: '. $_POST['stream'];
-	echo '<br>';
-	echo 'Text: ' . $_POST['text']; 
+	if ($output == NULL) {
+		echo '<h5>Added Post<h5> from: '. $_SESSION['author'];
+		echo ' to: '. $_POST['stream'];
+		echo '<br>';
+		echo 'Text: ' . $_POST['text']; 
+	}
+	else {
+		echo 'ERROR: Author may not have permission to stream <br>';
+	}
 }
 
 

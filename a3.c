@@ -169,6 +169,7 @@ void lConvert(char **args) {
 void bConvert(char **args) {
 
 	int i;
+	int check = 0;
 	char *attribute;
 	char *value;
 	char *text = calloc(100, sizeof(char));
@@ -181,16 +182,17 @@ void bConvert(char **args) {
 		if (value != NULL) {
 			value[strcspn(value, "\r\n")] = 0;
 
-			if (strcmp(attribute, "name") == 0)
+			if ((strcmp(attribute, "name") == 0) && check == 0) {
 				strcpy(text, value);
-
+				check = 1;
+			}
 			else if (strcmp(attribute, "link") == 0) {
 				strcpy(link, value);
 			}	
 		}
 	}
 	printf("<form method=\"POST\" action=\"%s\">\n", link);
-	printf("\t<input type=\"submit\" name=\"%s\" value=\"%s\"/>\n", text, text);
+	printf("\t<input type=\"submit\" value=\"%s\" name=\"%s\"/>\n", text, text);
 	printf("</form>\n");
 	
 	free(text);

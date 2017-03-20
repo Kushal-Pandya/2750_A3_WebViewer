@@ -45,7 +45,7 @@ a3.o: a3.c
 	$(CC) $(CFLAGS) -c a3.c
 
 applyPerm:
-	chmod 777 a3
+	chmod 7777 a3
 
 
 run:

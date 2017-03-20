@@ -5,28 +5,36 @@
 
 <?php 
 
-$cmd = './addauthor ' . $_POST['author'] . ' *' . $_POST['streams'];
+session_start();
+$author = $_SESSION['author'];
+
+$cmd = './addauthor ' . $author . ' *' . $_POST['streams'];
 exec($cmd, $output, $status);
 
 if ($status) {
 	echo 'addauthor failed';
 }
 else {
-	echo 'Added: '. $_POST['author'];
-	echo ' to: '. $_POST['streams'];
+	if ($output == NULL) {
+		echo 'Added: '. $author;
+		echo ' to: '. $_POST['streams'];
+	}
+	else
+		echo 'ERROR: author may already exist <br>';
 }
 
 
-$cmd = './a3 backToMenu.wpml';
-exec($cmd, $output, $status);
+$cmd2 = './a3 backToMenu.wpml';
+exec($cmd2, $output2, $status2);
 
-if ($status)
+if ($status2)
 	echo 'exec failed';
 else {
-	foreach ($output as $line) {
-		echo $line;
+	foreach ($output2 as $line2) {
+		echo $line2;
 	}
 }
+
 
 ?>
 

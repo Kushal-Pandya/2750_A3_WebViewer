@@ -5,26 +5,34 @@
 
 <?php 
 
-$cmd = './addauthor -r ' . $_POST['author'] . ' *' . $_POST['streams'];
+session_start();
+$author = $_SESSION['author'];
+
+$cmd = './addauthor -r ' . $author . ' *' . $_POST['streams'];
 exec($cmd, $output, $status);
 
 if ($status) {
-	echo 'addauthor failed';
+	echo 'remove author failed';
 }
 else {
-	echo 'Removed: '. $_POST['author'];
-	echo ' from: '. $_POST['streams'];
+	if ($output == NULL) {
+		echo 'Removed: '. $author;
+		echo ' from: '. $_POST['streams'];
+	}
+	else {
+		echo 'ERROR: author may not exist in stream entered <br>';
+	}
 }
 
 
-$cmd = './a3 backToMenu.wpml';
-exec($cmd, $output, $status);
+$cmd2 = './a3 backToMenu.wpml';
+exec($cmd2, $output2, $status2);
 
-if ($status)
+if ($status2)
 	echo 'exec failed';
 else {
-	foreach ($output as $line) {
-		echo $line;
+	foreach ($output2 as $line2) {
+		echo $line2;
 	}
 }
 

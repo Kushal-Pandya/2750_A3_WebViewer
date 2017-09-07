@@ -1,7 +1,7 @@
-CIS 2750
-A3
-Author: Kushal Pandya
-Due Date: March 10 2017 Extended to: Sunday March 19
+A3 for CIS 2750
+================
+- 3rd part of Blog Project
+- Added a PHP Web Interface and removed all CLI
 
 
 LIMITATIONS OR THINGS THAT DONT WORK
